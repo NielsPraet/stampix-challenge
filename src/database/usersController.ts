@@ -1,16 +1,5 @@
 import knexInstance from './knex';
-
-interface User {
-  gender: string;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone_number: string;
-  date_of_birth: string;
-  language: string;
-  created_at: Date;
-  modified_at: Date;
-}
+import type User from '../models/User';
 
 export default class UsersController {
   /**
@@ -22,14 +11,32 @@ export default class UsersController {
   static getUsersList: (filter?: string) => Promise<Array<User>> = async (
     filter?: string
   ) => {
-    let users;
-    if (filter) {
-      users = await knexInstance<User>('user')
-        .select('*')
-        .where('first_name', filter);
-    } else {
-      users = await knexInstance<User>('user').select('*');
+    try {
+      let users;
+      if (filter) {
+        users = await knexInstance<User>('user')
+          .select('*')
+          .where('first_name', filter);
+      } else {
+        users = await knexInstance<User>('user').select('*');
+      }
+      return users;
+    } catch (e) {
+      return Promise.reject(e);
     }
-    return users;
+  };
+
+  /**
+   * function that adds the given user to the database
+   * @param user The new user we want to add to the database
+   * @returns
+   */
+  static createUser: (user: User) => Promise<void> = async (user: User) => {
+    try {
+      // inserting values will return a list of the indexes of all users added to the database
+      return await knexInstance<User>('user').insert(user);
+    } catch (e) {
+      return Promise.reject(e);
+    }
   };
 }
