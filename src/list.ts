@@ -10,7 +10,7 @@ exports.handler = (
   const filter = request_headers ? request_headers.first_name : null;
 
   // Your code here
-  users_get(filter)
+  users_list(filter)
     .then((data) => callback(null, data))
     .catch((err) => callback(err));
 };
@@ -20,7 +20,7 @@ exports.handler = (
  * @param filter possible filter that indicates first name
  * @returns Promise containing list of users
  */
-const users_get = async (filter?: string) => {
+const users_list = async (filter?: string) => {
   const headers = {
     'Content-Type': 'application/json',
   };
