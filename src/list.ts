@@ -1,4 +1,5 @@
 import UsersController from './database/usersController';
+import Utils from './Utils';
 // Your project code
 
 exports.handler = (
@@ -29,20 +30,16 @@ const users_list = async (filter?: string) => {
     try {
       const users = await UsersController.getUsersList(filter);
       //For the callback to work correctly, we need to return a valid response object
-      const response = {
-        statusCode: 200,
-        headers: headers,
-        body: JSON.stringify(users),
-      };
+      const response = Utils.createResponse(
+        200,
+        headers,
+        JSON.stringify(users)
+      );
 
       resolve(response);
-    } catch (err) {
+    } catch (e) {
       // if an error would occur, we respond with a status 500 error
-      const response = {
-        statusCode: 500,
-        headers: headers,
-        body: JSON.stringify(err),
-      };
+      const response = Utils.createResponse(500, headers, JSON.stringify(e));
 
       reject(response);
     }
