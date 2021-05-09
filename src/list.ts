@@ -1,3 +1,4 @@
+import type User from './models/User';
 import UsersController from './database/usersController';
 import Utils from './Utils';
 // Your project code
@@ -21,7 +22,9 @@ exports.handler = (
  * @param filter possible filter that indicates first name
  * @returns Promise containing list of users
  */
-const users_list = async (filter?: string) => {
+const users_list: (filter?: string) => Promise<Array<User>> = async (
+  filter?: string
+) => {
   const headers = {
     'Content-Type': 'application/json',
   };
