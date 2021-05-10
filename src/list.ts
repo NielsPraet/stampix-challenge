@@ -9,9 +9,23 @@ exports.handler = (
   callback: (p1: any, p2?: any) => any
 ) => {
   const request_headers = event.queryStringParameters;
+  // if an empty first_name query is given, we return a 400 BAD REQUEST
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+  if (request_headers && request_headers.first_name.trim() == '') {
+    // create a response object
+    const response = Utils.createResponse(
+      400,
+      headers,
+      JSON.stringify({ error: 'Empty filter' })
+    );
+    callback(response);
+    return;
+  }
+  // the possible filter that the requesting entity added
   const filter = request_headers ? request_headers.first_name : null;
 
-  // Your code here
   users_list(filter)
     .then((data) => callback(null, data))
     .catch((err) => callback(err));
