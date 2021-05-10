@@ -9,9 +9,28 @@ exports.handler = (
 ) => {
   const path_parameters = event.pathParameters;
   const id = path_parameters ? path_parameters.id : null;
+  const headers = {
+    'Content-Type': 'application/json',
+  };
   // if no id is given, we return an error
   if (!id) {
-    callback('No ID was specified');
+    callback(
+      Utils.createResponse(
+        400,
+        headers,
+        JSON.stringify({ error: 'No ID specified' })
+      )
+    );
+  }
+  // if id is a non-numeric value, we return an error
+  if (isNaN(id)) {
+    callback(
+      Utils.createResponse(
+        400,
+        headers,
+        JSON.stringify({ error: 'non-numeric id' })
+      )
+    );
   }
   users_get(id)
     .then((data) => callback(null, data))
@@ -46,7 +65,6 @@ const users_get: (id: number) => Promise<any> = async (id: number) => {
       resolve(response);
     } catch (e) {
       // create the error response
-      // for now, we are going to assume we get an error because no user with that id could be found
       const response = Utils.createResponse(500, headers, JSON.stringify(e));
       reject(response);
     }
