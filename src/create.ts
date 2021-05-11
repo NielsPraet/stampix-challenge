@@ -1,5 +1,6 @@
 import type User from './models/User';
 import UsersController from './database/usersController';
+import Utils from './Utils';
 
 // Your project code
 exports.handler = (
@@ -7,6 +8,9 @@ exports.handler = (
   _context: any,
   callback: (p1: any, p2?: any) => any
 ) => {
+  const headers = {
+    'Content-Type': 'application/json',
+  };
   const user = event.body ? JSON.parse(event.body) : null;
   /*
    * First we check if the request has the correct headers ('Content-Type': 'application/json')
@@ -15,14 +19,23 @@ exports.handler = (
    */
   if (!has_correct_headers(event.headers) || !user || !is_valid_user(user)) {
     // return a 400 BAD REQUEST
-    callback({ statusCode: 400 });
+    callback(
+      null,
+      Utils.createResponse(
+        400,
+        headers,
+        JSON.stringify({
+          error: "No valid headers: 'Content-Type: application/json'",
+        })
+      )
+    );
     return;
   }
 
   // currently we don't return the id of the newly created entry to the requesting agent, but this would be an easy fix
   users_create(user)
-    .then(() => callback(null, { statusCode: 201 }))
-    .catch((err) => callback(err));
+    .then((data) => callback(null, data))
+    .catch((err) => callback(null, err));
 };
 
 /**
@@ -72,5 +85,22 @@ const has_correct_headers = (headers: any) => {
  * @returns Promise containing the id of the newly created user
  */
 const users_create = (user: User) => {
-  return UsersController.createUser(user);
+  const headers = {
+    'Content-Type': 'application/json',
+  };
+
+  return new Promise(async (resolve, reject) => {
+    try {
+      await UsersController.createUser(user);
+      const response = Utils.createResponse(201, null, null);
+      resolve(response);
+    } catch (e) {
+      const response = Utils.createResponse(
+        500,
+        headers,
+        JSON.stringify({ error: e })
+      );
+      reject(response);
+    }
+  });
 };

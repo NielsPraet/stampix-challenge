@@ -1,32 +1,32 @@
 const url = 'http://localhost:3000';
 const request = require('supertest')(url);
 
-test('POST /user without (correct) headers should return 502', () => {
+test('POST /user without (correct) headers should return 400', () => {
   return request
           .post('/user')
-          .expect(502)
+          .expect(400)
           &&
           request.post('/user')
           .accept('application/json')
-          .expect(502)
+          .expect(400);
 });
 
-test('POST /user with correct headers but without body should return 502', () => {
+test('POST /user with correct headers but without body should return 400', () => {
   return request
     .post('/user')
     .set('Content-Type', 'application/json')
-    .expect(502)
+    .expect(400)
 });
 
-test('POST /user with correct headers but incorrect body should return 502', () => {
+test('POST /user with correct headers but incorrect body should return 400', () => {
   return request
     .post('/user')
     .set('Content-Type', 'application/json')
     .send({ value: 'incorrect' })
-    .expect(502);
+    .expect(400);
 });
 
-test('POST /user with correct headers but missing body fields should return 502', () => {
+test('POST /user with correct headers but missing body fields should return 400', () => {
   return request
     .post('/user')
     .set('Content-Type', 'application/json')
@@ -34,10 +34,10 @@ test('POST /user with correct headers but missing body fields should return 502'
       first_name: 'John',
       last_name: 'Doe'
     })
-    .expect(502);
+    .expect(400);
 });
 
-test('POST /user with correct number of fields but wrong fields should return 502', () => {
+test('POST /user with correct number of fields but wrong fields should return 400', () => {
   return request
     .post('/user')
     .set('Content-Type', 'application/json')
@@ -51,10 +51,10 @@ test('POST /user with correct number of fields but wrong fields should return 50
       field7: '',
       field8: '',
     })
-    .expect(502);
+    .expect(400);
 });
 
-test('POST /user with correct but empty fields should return 502', () => {
+test('POST /user with correct but empty fields should return 400', () => {
   return request
     .post('/user')
     .set('Content-Type', 'application/json')
@@ -69,7 +69,7 @@ test('POST /user with correct but empty fields should return 502', () => {
       created_at: '',
       modified_at: ''
     })
-    .expect(502);
+    .expect(400);
 });
 
 test('POST /user with correct body should return 201', () => {
