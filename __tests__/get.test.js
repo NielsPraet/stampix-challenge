@@ -95,7 +95,7 @@ test('/user/{id} without valid id should not return an object with required fiel
     });
 });
 
-test('/user/{id} with non-numeric id should return 502', () => {
+test('/user/{id} with non-numeric id should return 400', () => {
   return request
     .get('/user/a')
     .expect(400);

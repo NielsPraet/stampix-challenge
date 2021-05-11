@@ -60,11 +60,11 @@ test('/users without valid query should return a valid non-null response', () =>
           });
 });
 
-test('/users with empty query should return a 502 error', () => {
+test('/users with empty query should return a 400 error', () => {
   return request
     .get('/users')
     .query({ first_name: '' })
-    .expect(502);
+    .expect(400);
 });
 
 test('/users without valid query should array', () => {

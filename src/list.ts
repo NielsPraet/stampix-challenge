@@ -20,7 +20,7 @@ exports.handler = (
       headers,
       JSON.stringify({ error: 'Empty filter' })
     );
-    callback(response);
+    callback(null, response);
     return;
   }
   // the possible filter that the requesting entity added
@@ -28,7 +28,7 @@ exports.handler = (
 
   users_list(filter)
     .then((data) => callback(null, data))
-    .catch((err) => callback(err));
+    .catch((err) => callback(null, err));
 };
 
 /**
