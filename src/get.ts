@@ -15,6 +15,7 @@ exports.handler = (
   // if no id is given, we return an error
   if (!id) {
     callback(
+      null,
       Utils.createResponse(
         400,
         headers,
@@ -25,6 +26,7 @@ exports.handler = (
   // if id is a non-numeric value, we return an error
   if (isNaN(id)) {
     callback(
+      null,
       Utils.createResponse(
         400,
         headers,
@@ -34,7 +36,7 @@ exports.handler = (
   }
   users_get(id)
     .then((data) => callback(null, data))
-    .catch((err) => callback(err));
+    .catch((err) => callback(null, err));
 };
 
 /**
